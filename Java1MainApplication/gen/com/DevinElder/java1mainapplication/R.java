@@ -13,7 +13,7 @@ public final class R {
         public static final int huston=0x7f060003;
         public static final int los_angeles=0x7f060001;
         public static final int new_york=0x7f060000;
-        public static final int philadelphia=0x7f060004;
+        public static final int phoenix=0x7f060004;
     }
     public static final class attr {
     }

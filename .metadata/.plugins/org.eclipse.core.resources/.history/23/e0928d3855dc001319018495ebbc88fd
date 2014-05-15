@@ -21,8 +21,7 @@ public class Cities {
 		PDT
 	};
 
-	public Cities(String thisCity, String thisSummary, String thisTimeZone, 
-			String thisIcon, int thisRainChance, float thisTemp, float thisWind) {
+	public Cities(String thisCity, String thisSummary, String thisTimeZone, String thisIcon, int thisRainChance, float thisTemp, float thisWind) {
 		// TODO Auto-generated constructor stub
 		this.city = thisCity;
 		this.summary = thisSummary;

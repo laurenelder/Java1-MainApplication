@@ -16,8 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.DevinElder.java1mainapplication.classData.*;
-import com.DevinElder.java1mainapplication.classData.Cities.timeZone;
-
 import org.json.*;
 
 public class MainActivity extends Activity {
@@ -102,57 +100,27 @@ public class MainActivity extends Activity {
 			JSONObject jsonMainObject = new JSONObject(jsonString);
 
 			// Creating JSONArray from JSONObject
-			JSONArray jsonArray = jsonMainObject.getJSONArray("cities");
+			JSONArray jsonArray = jsonMainObject.getJSONArray("employee");
 
 			// JSONArray has four JSONObject
 			for (int i = 0; i < jsonArray.length(); i++) {
-	
-				// Creating JSONObject from JSONArray
-				JSONObject jsonSubObject = jsonArray.getJSONObject(i);
-				
-				// Get Child Element
-				JSONObject currently = jsonSubObject.getJSONObject("currently");
-				
-				// Find and Set City
-				String currentCity = null;
-				float lat = jsonSubObject.getInt("latitude");
-				float longit = jsonSubObject.getInt("longitude");
-				if(lat == 40.6643 && longit == -73.9385) {
-					currentCity = "New York, NY";
-				}
-				if(lat == 34.0194 && longit == -118.4108) {
-					currentCity = "Los Angeles, CA";		
-				}
-				if(lat == 41.8376 && longit == -87.6818) {
-					currentCity = "Chicago, IL";
-				}
-				if(lat == 29.7805 && longit == -95.3863) {
-					currentCity = "Houston, TX";
-				}
-				if(lat == 33.5722 && longit == -112.088) {
-					currentCity = "Phoenix, AZ";
-				}
-				// Variables to pass to class
-				String currentSummary = currently.getString("summary");
-				String currentIcon = currently.getString("cloudy");
-				int currentRainChance = currently.getInt("precipProbability");
-				float currentTemp = currently.getInt("temperature");
-				float currentWind = currently.getInt("windSpeed");
-				String tz = jsonSubObject.getString("timezone");
-	
-				setClass(currentCity, currentSummary, tz, currentIcon, currentRainChance, currentTemp, currentWind);
+
+			// Creating JSONObject from JSONArray
+			JSONObject jsonObj = jsonArray.getJSONObject(i);
+
+			// Getting data from individual JSONObject
+			int id = jsonObj.getInt("id");
+			String name = jsonObj.getString("name");
+			String city = jsonObj.getString("city");
+			String gender = jsonObj.getString("gender");
+			int age = jsonObj.getInt("id");
+
 			}
-		} 
-		catch (JSONException e) {
+
+			} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	}
-	
-	// Set each City in the Class
-	public void setClass(String myCity, String mySummary, String myTimeZone, 
-			String myIcon, int myRainChance, float myTemp, float myWind) {
-		Cities newCity = new Cities(myCity, mySummary, myTimeZone, myIcon, myRainChance, myTemp, myWind);
+			}
 	}
 }
 

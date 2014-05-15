@@ -38,11 +38,11 @@ public class Cities {
 		if (thisTimeZone == "America/Chicago") {
 			this.currentTimeZone = timeZone.CDT;
 		}
-		if (thisTimeZone == "America/Phoenix") {
-			this.currentTimeZone = timeZone.MST;
+		if (thisTimeZone == "") {
+			
 		}
-		if (thisTimeZone == "America/Denver") {
-			this.currentTimeZone = timeZone.MST;
+		if (thisTimeZone == "") {
+			
 		}
 	}
 

@@ -11,9 +11,8 @@ public class Cities {
 	public int rainChance;
 	public float temp;
 	public float wind;
-	public timeZone currentTimeZone;
 	public 
-	static enum timeZone {
+	public static enum timeZone {
 		EDT,
 		CDT,
 		MDT,
@@ -29,20 +28,20 @@ public class Cities {
 		this.rainChance = thisRainChance;
 		this.temp = thisTemp;
 		this.wind = thisWind;
-		if (thisTimeZone == "America/New_York") {
-			this.currentTimeZone = timeZone.EDT;
+		if (thisTimeZone == "") {
+			this.timeZone = 
 		}
-		if (thisTimeZone == "America/Los_Angeles") {
-			this.currentTimeZone = timeZone.PDT;	
+		if (thisTimeZone == "") {
+				this.timeZone = timeZone.CDT;	
 				}
-		if (thisTimeZone == "America/Chicago") {
-			this.currentTimeZone = timeZone.CDT;
+		if (thisTimeZone == "") {
+			
 		}
-		if (thisTimeZone == "America/Phoenix") {
-			this.currentTimeZone = timeZone.MST;
+		if (thisTimeZone == "") {
+			
 		}
-		if (thisTimeZone == "America/Denver") {
-			this.currentTimeZone = timeZone.MST;
+		if (thisTimeZone == "") {
+			
 		}
 	}
 

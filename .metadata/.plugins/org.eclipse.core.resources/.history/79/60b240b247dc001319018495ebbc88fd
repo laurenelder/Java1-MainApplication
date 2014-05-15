@@ -32,17 +32,17 @@ public class Cities {
 		if (thisTimeZone == "America/New_York") {
 			this.currentTimeZone = timeZone.EDT;
 		}
-		if (thisTimeZone == "America/Los_Angeles") {
-			this.currentTimeZone = timeZone.PDT;	
+		if (thisTimeZone == "") {
+				this.currentTimeZone = timeZone.CDT;	
 				}
-		if (thisTimeZone == "America/Chicago") {
-			this.currentTimeZone = timeZone.CDT;
+		if (thisTimeZone == "") {
+			
 		}
-		if (thisTimeZone == "America/Phoenix") {
-			this.currentTimeZone = timeZone.MST;
+		if (thisTimeZone == "") {
+			
 		}
-		if (thisTimeZone == "America/Denver") {
-			this.currentTimeZone = timeZone.MST;
+		if (thisTimeZone == "") {
+			
 		}
 	}
 

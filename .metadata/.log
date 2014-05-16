@@ -789,3 +789,6 @@ org.eclipse.core.internal.resources.ResourceException: Resource is out of sync w
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
 !SUBENTRY 1 org.eclipse.core.resources 4 274 2014-05-15 12:29:23.213
 !MESSAGE Resource is out of sync with the file system: '/Java1MainApplication/assets/data.json'.
+
+!ENTRY org.eclipse.ui 4 4 2014-05-15 22:15:16.513
+!MESSAGE Referenced part does not exist yet: org.eclipse.ui.views.ProblemView.

@@ -1,7 +1,7 @@
 // Devin "Lauren" Elder
 // Java 1 Week 2 Project
-
 package com.DevinElder.java1mainapplication.classData;
+
 
 public class Cities {
 	
@@ -22,7 +22,7 @@ public class Cities {
 	};
 
 	public Cities(String thisCity, String thisSummary, String thisTimeZone, 
-			String thisIcon, int thisRainChance, float thisTemp, float thisWind) {
+			String thisIcon, int thisRainChance, int thisTemp, int thisWind) {
 		// TODO Auto-generated constructor stub
 		this.city = thisCity;
 		this.summary = thisSummary;
@@ -45,6 +45,10 @@ public class Cities {
 		if (thisTimeZone == "America/Denver") {
 			this.currentTimeZone = timeZone.MST;
 		}
+	}
+	
+	public String toString() {
+		return city;
 	}
 
 	/**

@@ -10,6 +10,7 @@ package com.DevinElder.java1mainapplication;
 public final class R {
     public static final class array {
         public static final int chicago=0x7f060002;
+        public static final int city_names=0x7f060005;
         public static final int huston=0x7f060003;
         public static final int los_angeles=0x7f060001;
         public static final int new_york=0x7f060000;

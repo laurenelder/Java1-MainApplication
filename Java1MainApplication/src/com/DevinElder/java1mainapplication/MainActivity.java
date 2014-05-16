@@ -6,22 +6,31 @@ package com.DevinElder.java1mainapplication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import android.app.Activity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Fragment;
+import android.app.ListActivity;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.DevinElder.java1mainapplication.classData.*;
-import com.DevinElder.java1mainapplication.classData.Cities.timeZone;
+import android.widget.ArrayAdapter;
 
-import org.json.*;
+import com.DevinElder.java1mainapplication.classData.Cities;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
 
+	List<Cities> citiesList = new ArrayList<Cities>();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -31,7 +40,11 @@ public class MainActivity extends Activity {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		ArrayAdapter<Cities> listAdapter = new ArrayAdapter<Cities>
+		(this, android.R.layout.simple_list_item_1, citiesList);
+		setListAdapter(listAdapter);
 		getJson();
+		listAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -79,23 +92,23 @@ public class MainActivity extends Activity {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(getAssets().open(
-			"data.json")));
+			"staticData.json")));
 			String tempData;
 			while ((tempData = reader.readLine()) != null)
 				jsonBuffer.append(tempData);
 		} 
-		catch (IOException exept) {
-			exept.printStackTrace();
+		catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			try {
 				reader.close(); // stop reading
 			} 
-			catch (IOException exept) {
-				exept.printStackTrace();
+			catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		String jsonString = jsonBuffer.toString();
-		
+		Log.i("MainActivity", jsonString);
 		// Parse JSON
 		try {
 			// Creating JSONObject from String
@@ -112,7 +125,7 @@ public class MainActivity extends Activity {
 				
 				// Get Child Element
 				JSONObject currently = jsonSubObject.getJSONObject("currently");
-				
+				Log.i("MainActivity", currently.toString());
 				// Find and Set City
 				String currentCity = null;
 				float lat = jsonSubObject.getInt("latitude");
@@ -132,27 +145,31 @@ public class MainActivity extends Activity {
 				if(lat == 33.5722 && longit == -112.088) {
 					currentCity = "Phoenix, AZ";
 				}
-				// Variables to pass to class
+				
 				String currentSummary = currently.getString("summary");
-				String currentIcon = currently.getString("cloudy");
+				String currentIcon = currently.getString("icon");
 				int currentRainChance = currently.getInt("precipProbability");
-				float currentTemp = currently.getInt("temperature");
-				float currentWind = currently.getInt("windSpeed");
+				int currentTemp = currently.getInt("temperature");
+				int currentWind = currently.getInt("windSpeed");
 				String tz = jsonSubObject.getString("timezone");
-	
-				setClass(currentCity, currentSummary, tz, currentIcon, currentRainChance, currentTemp, currentWind);
+				
+				setClass(currentCity, currentSummary, tz, currentIcon, currentRainChance, 
+						currentTemp, currentWind);
 			}
 		} 
 		catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 	}
 	
 	// Set each City in the Class
 	public void setClass(String myCity, String mySummary, String myTimeZone, 
-			String myIcon, int myRainChance, float myTemp, float myWind) {
+			String myIcon, int myRainChance, int myTemp, int myWind) {
 		Cities newCity = new Cities(myCity, mySummary, myTimeZone, myIcon, myRainChance, myTemp, myWind);
+		citiesList.add(newCity);
 	}
 }
 

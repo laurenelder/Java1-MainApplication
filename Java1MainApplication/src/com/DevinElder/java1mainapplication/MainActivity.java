@@ -3,9 +3,13 @@
 
 package com.DevinElder.java1mainapplication;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +20,9 @@ import org.json.JSONObject;
 import android.app.Fragment;
 import android.app.ListActivity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +35,10 @@ import android.widget.ArrayAdapter;
 import com.DevinElder.java1mainapplication.classData.Cities;
 
 public class MainActivity extends ListActivity {
+	
+	static String tag = "NETWORK DATA - MAINACTIVITY";
+	static Context context;
+//	Context context = getApplicationContext();
 
 	List<Cities> citiesList = new ArrayList<Cities>();
 	
@@ -45,6 +56,11 @@ public class MainActivity extends ListActivity {
 		setListAdapter(listAdapter);
 		getJson();
 		listAdapter.notifyDataSetChanged();
+		if(networkStatus(context)) {
+			Log.i(tag, "We have a connection");
+		} else {
+			Log.i(tag, "Nope no connection");
+		}
 	}
 
 	@Override
@@ -127,22 +143,23 @@ public class MainActivity extends ListActivity {
 				JSONObject currently = jsonSubObject.getJSONObject("currently");
 				Log.i("MainActivity", currently.toString());
 				// Find and Set City
-				String currentCity = null;
-				float lat = jsonSubObject.getInt("latitude");
-				float longit = jsonSubObject.getInt("longitude");
-				if(lat == 40.6643 && longit == -73.9385) {
+				String currentCity = "Not Available";
+				String lat = Integer.toString(jsonSubObject.getInt("latitude"));
+				String longit = Integer.toString(jsonSubObject.getInt("longitude"));
+
+				if(lat.matches("40") && longit.matches("-73")) {
 					currentCity = "New York, NY";
 				}
-				if(lat == 34.0194 && longit == -118.4108) {
+				if(lat.matches("34") && longit.matches("-118")) {
 					currentCity = "Los Angeles, CA";		
 				}
-				if(lat == 41.8376 && longit == -87.6818) {
+				if(lat.matches("41") && longit.matches("-87")) {
 					currentCity = "Chicago, IL";
 				}
-				if(lat == 29.7805 && longit == -95.3863) {
+				if(lat.matches("29") && longit.matches("-95")) {
 					currentCity = "Houston, TX";
 				}
-				if(lat == 33.5722 && longit == -112.088) {
+				if(lat.matches("33") && longit.matches("-112")) {
 					currentCity = "Phoenix, AZ";
 				}
 				
@@ -152,7 +169,15 @@ public class MainActivity extends ListActivity {
 				int currentTemp = currently.getInt("temperature");
 				int currentWind = currently.getInt("windSpeed");
 				String tz = jsonSubObject.getString("timezone");
-				
+				Log.i(tag, currentCity.toString());
+				Log.i(tag, lat.toString());
+				Log.i(tag, longit.toString());
+				Log.i(tag, currentSummary.toString());
+				Log.i(tag, currentIcon.toString());
+				Log.i(tag, Integer.toString(currentRainChance));
+				Log.i(tag, Integer.toString(currentTemp));
+				Log.i(tag, Integer.toString(currentWind));
+				Log.i(tag, tz.toString());
 				setClass(currentCity, currentSummary, tz, currentIcon, currentRainChance, 
 						currentTemp, currentWind);
 			}
@@ -170,6 +195,76 @@ public class MainActivity extends ListActivity {
 			String myIcon, int myRainChance, int myTemp, int myWind) {
 		Cities newCity = new Cities(myCity, mySummary, myTimeZone, myIcon, myRainChance, myTemp, myWind);
 		citiesList.add(newCity);
+	}
+	
+	// Network Connection Function
+	public Boolean networkStatus(Context context) {
+		Boolean connection = false;
+		ConnectivityManager connectManag = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkData = connectManag.getActiveNetworkInfo();
+		if(networkData != null && connectManag.getActiveNetworkInfo().isAvailable()) {
+			if(networkData.isConnected()) {
+				Log.i(tag, "Connected Type: " + networkData.getTypeName());
+				connection = true;
+			}
+			else {
+				Log.i(tag, "Not Connected to a Network!");
+				connection = false;
+			}
+		}
+		return connection;
+	}
+	
+	// API Functions
+	public static String getAPIresponse(URL url) {
+		String response = "";
+		try {
+			URLConnection conn = url.openConnection();
+			BufferedInputStream buffer = new BufferedInputStream(conn.getInputStream());
+			byte[] contextByte = new byte[1024];
+			int byteRead = 0;
+			StringBuffer responseBuffer = new StringBuffer();
+			while(byteRead == buffer.read(contextByte) && buffer.read(contextByte) != -1) {
+				response = new String(contextByte, 0, byteRead);
+				responseBuffer.append(response);
+			}
+			response = responseBuffer.toString();
+			Log.i(tag, response);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Log.e(tag, "something happened and it didn't work", e);
+			response = "something happened and it didn't work";
+		}
+		return response;
+	}
+	
+	static class getData extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			String responseString = "";
+			try {
+				URL url = new URL("URL String");
+				responseString = getAPIresponse(url);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseString = "Something went wrong with the response string!";
+				Log.e(tag, "error", e);
+			}
+			return responseString;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			// Do something with the information...
+			super.onPostExecute(result);
+		}
+		
 	}
 }
 

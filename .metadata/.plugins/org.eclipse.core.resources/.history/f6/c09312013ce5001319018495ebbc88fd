@@ -1,0 +1,271 @@
+// Devin "Lauren" Elder
+// Java 1 Week 2 Project
+
+package com.DevinElder.java1mainapplication;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Fragment;
+import android.app.ListActivity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+
+import com.DevinElder.java1mainapplication.classData.Cities;
+
+public class MainActivity extends ListActivity {
+	
+	static String tag = "NETWORK DATA - MAINACTIVITY";
+	static Context context;
+
+	List<Cities> citiesList = new ArrayList<Cities>();
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		if (savedInstanceState == null) {
+			getFragmentManager().beginTransaction()
+					.add(R.id.container, new PlaceholderFragment()).commit();
+		}
+		ArrayAdapter<Cities> listAdapter = new ArrayAdapter<Cities>
+		(this, android.R.layout.simple_list_item_1, citiesList);
+		setListAdapter(listAdapter);
+		getJson();
+		listAdapter.notifyDataSetChanged();
+/*		if(networkStatus(context)) {
+			Log.i(tag, "We have a connection");
+		} else {
+			Log.i(tag, "Nope no connection");
+		}*/
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * A placeholder fragment containing a simple view.
+	 */
+	public static class PlaceholderFragment extends Fragment {
+
+		public PlaceholderFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_main, container,
+					false);
+			return rootView;
+		}
+	}
+	
+	// Get and Parse JSON Function
+	public void getJson() {
+		
+		//Get Data
+		StringBuffer jsonBuffer = new StringBuffer();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(getAssets().open(
+			"staticData.json")));
+			String tempData;
+			while ((tempData = reader.readLine()) != null)
+				jsonBuffer.append(tempData);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				reader.close(); // stop reading
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		String jsonString = jsonBuffer.toString();
+		Log.i("MainActivity", jsonString);
+		// Parse JSON
+		try {
+			// Creating JSONObject from String
+			JSONObject jsonMainObject = new JSONObject(jsonString);
+
+			// Creating JSONArray from JSONObject
+			JSONArray jsonArray = jsonMainObject.getJSONArray("cities");
+
+			// JSONArray has four JSONObject
+			for (int i = 0; i < jsonArray.length(); i++) {
+	
+				// Creating JSONObject from JSONArray
+				JSONObject jsonSubObject = jsonArray.getJSONObject(i);
+				
+				// Get Child Element
+				JSONObject currently = jsonSubObject.getJSONObject("currently");
+				Log.i("MainActivity", currently.toString());
+				// Find and Set City
+				String currentCity = "Not Available";
+				String lat = Integer.toString(jsonSubObject.getInt("latitude"));
+				String longit = Integer.toString(jsonSubObject.getInt("longitude"));
+
+				if(lat.matches("40") && longit.matches("-73")) {
+					currentCity = "New York, NY";
+				}
+				if(lat.matches("34") && longit.matches("-118")) {
+					currentCity = "Los Angeles, CA";		
+				}
+				if(lat.matches("41") && longit.matches("-87")) {
+					currentCity = "Chicago, IL";
+				}
+				if(lat.matches("29") && longit.matches("-95")) {
+					currentCity = "Houston, TX";
+				}
+				if(lat.matches("33") && longit.matches("-112")) {
+					currentCity = "Phoenix, AZ";
+				}
+				
+				String currentSummary = currently.getString("summary");
+				String currentIcon = currently.getString("icon");
+				int currentRainChance = currently.getInt("precipProbability");
+				int currentTemp = currently.getInt("temperature");
+				int currentWind = currently.getInt("windSpeed");
+				String tz = jsonSubObject.getString("timezone");
+				Log.i(tag, currentCity.toString());
+				Log.i(tag, lat.toString());
+				Log.i(tag, longit.toString());
+				Log.i(tag, currentSummary.toString());
+				Log.i(tag, currentIcon.toString());
+				Log.i(tag, Integer.toString(currentRainChance));
+				Log.i(tag, Integer.toString(currentTemp));
+				Log.i(tag, Integer.toString(currentWind));
+				Log.i(tag, tz.toString());
+				setClass(currentCity, currentSummary, tz, currentIcon, currentRainChance, 
+						currentTemp, currentWind);
+			}
+		} 
+		catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	// Set each City in the Class
+	public void setClass(String myCity, String mySummary, String myTimeZone, 
+			String myIcon, int myRainChance, int myTemp, int myWind) {
+		Cities newCity = new Cities(myCity, mySummary, myTimeZone, myIcon, myRainChance, myTemp, myWind);
+		citiesList.add(newCity);
+	}
+	
+	// Network Connection Function
+	public Boolean networkStatus(Context context) {
+		Boolean connection = false;
+		ConnectivityManager connectManag = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkData = connectManag.getActiveNetworkInfo();
+		if(networkData != null && connectManag.getActiveNetworkInfo().isAvailable()) {
+			if(networkData.isConnected()) {
+				Log.i(tag, "Connected Type: " + networkData.getTypeName());
+				connection = true;
+			}
+			else {
+				Log.i(tag, "Not Connected to a Network!");
+				connection = false;
+			}
+		}
+		return connection;
+	}
+	
+	// API Functions
+	public static String getAPIresponse(URL url) {
+		String response = "";
+		try {
+			URLConnection conn = url.openConnection();
+			BufferedInputStream buffer = new BufferedInputStream(conn.getInputStream());
+			byte[] contextByte = new byte[1024];
+			int byteRead = 0;
+			StringBuffer responseBuffer = new StringBuffer();
+			while(byteRead == buffer.read(contextByte) && buffer.read(contextByte) != -1) {
+				response = new String(contextByte, 0, byteRead);
+				responseBuffer.append(response);
+			}
+			response = responseBuffer.toString();
+			Log.i(tag, response);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Log.e(tag, "something happened and it didn't work", e);
+			response = "something happened and it didn't work";
+		}
+		return response;
+	}
+	
+	static class getData extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			String responseString = "";
+			try {
+				URL url = new URL("URL String");
+				responseString = getAPIresponse(url);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseString = "Something went wrong with the response string!";
+				Log.e(tag, "error", e);
+			}
+			return responseString;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			// Do something with the information...
+			super.onPostExecute(result);
+		}
+		
+	}
+}
+
+
+

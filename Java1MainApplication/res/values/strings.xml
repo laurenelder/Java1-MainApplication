@@ -8,26 +8,20 @@
     <string name="app_name">Java1 MainApplication</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string-array name="new_york">
-        <item>40.6643</item>
-        <item>-73.9385</item>
-    </string-array>
-    <string-array name="los_angeles">
-        <item>34.0194</item>
-        <item>-118.4108</item>
-    </string-array>
-    <string-array name="chicago">
-        <item>41.8376</item>
-        <item>-87.6818</item>
-    </string-array>
-    <string-array name="huston">
-        <item>29.7805</item>
-        <item>-95.3863</item>
-    </string-array>
-    <string-array name="phoenix">
-        <item>33.5722</item>
-        <item>-112.0880</item>
-    </string-array>
+    <string name="button_text">Find Weather</string>
+    <string name="base_url">https://api.forecast.io/forecast/83da4ab87b461df1022cf12bf061b5d6/</string>
+    <string name="input_lat">Input Latitude:</string>
+    <string name="input_long">Input Longitude:</string>
+    <string name="new_york_lat">40.6643</string>
+    <string name="new_york_long">-73.9385</string>
+    <string name="los_angeles_lat">34.0194</string>
+    <string name="los_angeles_long">-118.4108</string>
+    <string name="chicago_lat">41.8376</string>
+    <string name="chicago_long">-87.6818</string>
+    <string name="huston_lat">29.7805</string>
+    <string name="huston_long">-95.3863</string>
+    <string name="phoenix_lat">33.5722</string>
+    <string name="phoenix_long">-112.0880</string>
     <string-array name="city_names">
         <item>New York, NY</item>
         <item>Los Angeles, CA</item>
